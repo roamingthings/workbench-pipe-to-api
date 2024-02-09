@@ -1,0 +1,50 @@
+[versions]
+awsCdk = "2.126.0"
+awsLambdaLogging = "1.6.0"
+jackson = "2.16.1"
+log4j2 = "2.22.1"
+lombok = "1.18.30"
+micronaut = "4.3.0"
+micronautPlugin = "4.3.1"
+micronautStarterCdk = "4.3.1"
+shadowJarPlugin = "8.1.1"
+snapshotTesting = "4.0.7"
+
+[libraries]
+aws-cdkLib = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "awsCdk" }
+aws-lambdaJavaLogging = { module = "com.amazonaws:aws-lambda-java-log4j2", version.ref = "awsLambdaLogging" }
+aws-lambdaJavaEvents = { module = "com.amazonaws:aws-lambda-java-events" }
+jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatypeJdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
+jackson-datatypeJsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api"}
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine"}
+log4j2-api = { module = "org.apache.logging.log4j:log4j-api" }
+log4j2-bom = { module = "org.apache.logging.log4j:log4j-bom", version.ref = "log4j2" }
+log4j2-core = { module = "org.apache.logging.log4j:log4j-core" }
+log4j2-templateJson = { module = "org.apache.logging.log4j:log4j-layout-template-json" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+micronaut-awsLambdaEventSerde = { module = "io.micronaut.aws:micronaut-aws-lambda-events-serde" }
+micronaut-awsSdkV2 = { module = "io.micronaut.aws:micronaut-aws-sdk-v2" }
+micronaut-bom = { module = "io.micronaut.platform:micronaut-platform", version.ref = "micronaut" }
+micronaut-crac = { module = "io.micronaut.crac:micronaut-crac" }
+micronaut-functionAws = { module = "io.micronaut.aws:micronaut-function-aws" }
+micronaut-serdeJackson = { module = "io.micronaut.serde:micronaut-serde-jackson" }
+micronaut-serdeProcessor = { module = "io.micronaut.serde:micronaut-serde-processor" }
+micronaut-starterCdk = { module = "io.micronaut.starter:micronaut-starter-aws-cdk", version.ref="micronautStarterCdk" }
+slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
+snapshotTesting-core = { module = "io.github.origin-energy:java-snapshot-testing-junit5", version.ref = "snapshotTesting" }
+snapshotTesting-jackson = { module = "io.github.origin-energy:java-snapshot-testing-plugin-jackson", version.ref = "snapshotTesting" }
+
+[bundles]
+logging-runtime = ["log4j2-core", "slf4j-impl", "aws-lambdaJavaLogging", "log4j2-templateJson"]
+micronaut-serde = ["micronaut-awsLambdaEventSerde", "micronaut-serdeJackson"]
+micronaut-lambdaBase = ["micronaut-awsSdkV2", "micronaut-functionAws", "micronaut-crac"]
+snapshotTesting = ["snapshotTesting-core", "snapshotTesting-jackson"]
+jackson-base = ["jackson-core", "jackson-databind"]
+jackson-runtime = ["jackson-datatypeJdk8", "jackson-datatypeJsr310"]
+
+[plugins]
+micronaut-minimalLibrary = { id = "io.micronaut.minimal.library", version.ref = "micronautPlugin" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadowJarPlugin" }

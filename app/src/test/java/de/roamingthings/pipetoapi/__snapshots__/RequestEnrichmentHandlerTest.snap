@@ -1,0 +1,10 @@
+de.roamingthings.pipetoapi.RequestEnrichmentHandlerTest.testHandler=[
+  [
+    {
+      "Headers": {
+        "signature": "4d640ceb9523875b6f3940a7a516493274b304f1"
+      },
+      "RequestBody": "{\n      \"Foo\": \"Bar\"\n    }"
+    }
+  ]
+]
