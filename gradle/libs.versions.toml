@@ -1,5 +1,5 @@
 [versions]
-awsCdk = "2.126.0"
+awsCdk = "2.127.0"
 awsLambdaLogging = "1.6.0"
 jackson = "2.16.1"
 log4j2 = "2.22.1"
