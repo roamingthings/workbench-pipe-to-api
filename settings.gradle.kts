@@ -1,4 +1,5 @@
 rootProject.name="workbench-pipe-to-api"
 
-include("app")
+include("enrichment")
+include("order")
 include("infra")

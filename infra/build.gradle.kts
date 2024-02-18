@@ -30,7 +30,8 @@ application {
 }
 
 tasks.withType<JavaCompile>() {
-    dependsOn(":app:shadowJar")
+    dependsOn(":enrichment:shadowJar")
+    dependsOn(":order:shadowJar")
 }
 
 tasks.withType<Test> {

@@ -4,6 +4,7 @@ import io.micronaut.aws.cdk.function.MicronautFunction;
 import io.micronaut.aws.cdk.function.MicronautFunctionFile;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.options.BuildTool;
+import software.amazon.awscdk.CfnOutput;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.Environment;
 import software.amazon.awscdk.IStackSynthesizer;
@@ -35,6 +36,8 @@ public class PipeToApiStack extends Stack {
     public PipeToApiStack(Construct parent, String id, PipeToApiStackProps props) {
         super(parent, id, props);
 
+        createOrderFunction();
+
         var sourceQueue = Queue.Builder.create(this, "Source")
                 .build();
 
@@ -46,7 +49,7 @@ public class PipeToApiStack extends Stack {
                 .runtime(Runtime.JAVA_21)
                 .handler("de.roamingthings.workbench.pipetoapi.RequestEnrichmentHandler")
                 .environment(environmentVariables)
-                .code(Code.fromAsset(functionPath()))
+                .code(Code.fromAsset(enrichmentFunctionPath()))
                 .timeout(Duration.seconds(10))
                 .memorySize(768)
                 .logRetention(RetentionDays.ONE_DAY)
@@ -55,7 +58,7 @@ public class PipeToApiStack extends Stack {
                 .architecture(Architecture.X86_64)
                 .snapStart(SnapStartConf.ON_PUBLISHED_VERSIONS)
                 .build();
-        var alias = Alias.Builder.create(this, "Alias")
+        var alias = Alias.Builder.create(this, "RequestEnrichmentAlias")
                 .aliasName("live")
                 .version(function.getCurrentVersion())
                 .build();
@@ -72,15 +75,48 @@ public class PipeToApiStack extends Stack {
                 .build());
     }
 
-    public static String functionPath() {
-        return "../app/build/libs/" + functionFilename();
+    private void createOrderFunction() {
+        var createOrderFunctionEnvironmentVariables = new HashMap<String, String>();
+        var createOrderFunction = MicronautFunction.create(ApplicationType.FUNCTION,
+                false,
+                this,
+                "CreateOrder")
+                .runtime(Runtime.JAVA_21)
+                .handler("de.roamingthings.workbench.pipetoapi.CreateOrderHandler")
+                .environment(createOrderFunctionEnvironmentVariables)
+                .code(Code.fromAsset(orderFunctionPath()))
+                .timeout(Duration.seconds(10))
+                .memorySize(768)
+                .logRetention(RetentionDays.ONE_DAY)
+                .logFormat("JSON")
+                .tracing(Tracing.ACTIVE)
+                .architecture(Architecture.X86_64)
+                .snapStart(SnapStartConf.ON_PUBLISHED_VERSIONS)
+                .build();
+        Alias.Builder.create(this, "CreateOrderAlias")
+                .aliasName("live")
+                .version(createOrderFunction.getCurrentVersion())
+                .build();
+        var functionUrl = createOrderFunction.addFunctionUrl();
+        CfnOutput.Builder.create(this, "CreateOrderFunctionUrl")
+                .value(functionUrl.getUrl())
+                .description("URL of the CreateOrder function")
+                .build();
     }
 
-    public static String functionFilename() {
+    public static String enrichmentFunctionPath() {
+        return "../enrichment/build/libs/" + functionFilename("enrichment");
+    }
+
+    public static String orderFunctionPath() {
+        return "../order/build/libs/" + functionFilename("order");
+    }
+
+    public static String functionFilename(String moduleName) {
         return MicronautFunctionFile.builder()
             .graalVMNative(false)
             .version("0.1")
-            .archiveBaseName("app")
+            .archiveBaseName(moduleName)
             .buildTool(BuildTool.GRADLE)
             .build();
     }

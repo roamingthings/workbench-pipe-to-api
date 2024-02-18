@@ -11,7 +11,7 @@ class PipeToApiStackTest {
 
     @Test
     void testAppStack() {
-        if (new File(PipeToApiStack.functionPath()).exists()) {
+        if (new File(PipeToApiStack.enrichmentFunctionPath()).exists()) {
             PipeToApiStack stack = new PipeToApiStack(new App(), "TestMicronautAppStack", PipeToApiStack.PipeToApiStackProps.builder()
                     .endpointUrl("https://example.com")
                     .build());
